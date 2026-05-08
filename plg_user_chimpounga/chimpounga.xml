@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension method="upgrade" type="plugin" group="user">
+	<name>plg_user_chimpounga</name>
+  <version>1.0</version>
+  <description>PLG_USER_CHIMPOUNGA_DESCRIPTION</description>
+	<author>ThemeXpert(Parvez Akther) / Brett Vachon</author>
+	<creationDate>July 2014</creationDate>
+	<copyright>
+   Original XChimp plugin Copyright (C) 2010 - 2014 ThemeXpert.
+   Chimpounga Copyright (C) 2025 - 2026 Brett Vachon.
+  </copyright>
+	<license>GNU General Public License version 3 or later</license>
+
+  <namespace path="src">Naftee\Plugin\User\Chimpounga</namespace>
+
+	<files>
+		<folder plugin="chimpounga">services</folder>
+    <folder>src</folder>
+		<folder>lib</folder>
+	</files>
+  
+  <languages folder="language">
+		<language tag="en-GB">en-GB/plg_user_chimpounga.ini</language>
+		<language tag="en-GB">en-GB/plg_user_chimpounga.sys.ini</language>
+    <language tag="fr-FR">fr-FR/plg_user_chimpounga.ini</language>
+		<language tag="fr-FR">fr-FR/plg_user_chimpounga.sys.ini</language>
+	</languages>
+  
+  <scriptfile>script.php</scriptfile>
+
+  <config>
+		<fields name="params" addfieldprefix="Naftee\Plugin\User\Chimpounga\Field">
+
+			<fieldset name="basic">
+
+        <field name="note" type="note"
+          label="PLG_USER_CHIMPOUNGA_NOTE_LABEL"
+          description="PLG_USER_CHIMPOUNGA_NOTE_DESC"
+          inlineHelp="true"
+          class="alert alert-info"
+        />
+
+				<field name="apikey" type="text" 
+          class="form-control"	
+          label="PLG_USER_CHIMPOUNGA_FIELD_APIKEY"  
+          description="PLG_USER_CHIMPOUNGA_FIELD_APIKEY_DESC"
+        />
+
+        <field name="listid" type="mailchimplists"
+          label="PLG_USER_CHIMPOUNGA_FIELD_LISTID"
+          description="PLG_USER_CHIMPOUNGA_FIELD_LISTID_DESC" 
+        />
+        
+        <field name="tags" type="text"
+          class="form-control"
+          label="PLG_USER_CHIMPOUNGA_FIELD_TAGS"
+          description="PLG_USER_CHIMPOUNGA_FIELD_TAGS_DESC"
+        />
+
+			</fieldset>
+
+		</fields>
+	</config>
+  
+  <updateservers>
+    <server type="extension" name="Chimpounga Updates">https://raw.githubusercontent.com/brettvac/Chimpounga/refs/heads/main/update/updates.xml</server>
+  </updateservers>
+</extension>
