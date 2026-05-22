@@ -1,16 +1,17 @@
 <?php
 /*
  * @package Chimpounga Plugin
- * Version 1.0
- * @license http://www.gnu.org/licenses/gpl-3.0.html GNU/GPLv3 only
+ * @version 1.1
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GNU/GPLv3
  */
 namespace Naftee\Plugin\User\Chimpounga\Extension;
 
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Event\SubscriberInterface;
-use Joomla\Event\Event;
+use Joomla\CMS\Event\User\AfterSaveEvent;
 use Joomla\CMS\Log\Log;
 use Joomla\CMS\Factory;
+use Joomla\Database\DatabaseInterface;
 
 use DrewM\MailChimp\MailChimp;
 
@@ -28,22 +29,31 @@ class Chimpounga extends CMSPlugin implements SubscriberInterface
    /*
     * Method is called after user data is stored in the database
     */
-  public function handleUserAfterSave(Event $event): void
+  public function handleUserAfterSave(AfterSaveEvent $event): void
     {
-    //extract the user data array, isNew flag, success status, and message from the event’s arguments array 
-    [ $user, $isnew, $success, $msg ] = array_values($event->getArguments());       
+    $success = $event->getSavingResult(); 
 
     if (!$success) 
       {
-      return; //User save was not successful
+      $msg = $event->getErrorMessage();  
+      Log::add($msg, Log::ERROR, 'chimpounga-error');
+
+      if (JDEBUG)
+        {
+        Log::add($msg, Log::DEBUG, 'chimpounga-error');
+        }
+      
+      return; //User save was not successful; do not continue processing
       }
 
-    //Pull in the parameters    
+    // Pull in the parameters    
     $apikey = $this->params->get('apikey');
     $listid = $this->params->get('listid');
     $tagsInput = $this->params->get('tags');
+    $hikashopTagsInput = $this->params->get('hikashop_tags');
        
     // Trim the name to remove leading/trailing spaces
+    $user = $event->getUser();
     $trimName = trim($user['name']);
 
     // Check if there are any spaces
@@ -58,10 +68,11 @@ class Chimpounga extends CMSPlugin implements SubscriberInterface
       $firstName = $name[0] ?? '';
       $lastName = implode(' ', array_slice($name, 1)); //Handles multiple last names
       }
-    
-    //Create array from tags for Mailchimp subscription
+      
+    // Tags must be an array for the Mailchimp submission
     $tags = [];
     
+    // Add the tags for all saved users
     if (!empty($tagsInput)) 
       {
       $tagsArray = explode(',', $tagsInput);
@@ -76,18 +87,92 @@ class Chimpounga extends CMSPlugin implements SubscriberInterface
           }   
         }
       } 
-        
+    
+    // Add the tags for users with a confirmed Hikashop order
+    if (!empty($hikashopTagsInput))
+    {
+        try
+        {
+            // Get the dependency injection container
+            $container = Factory::getContainer();
+
+            // Get a database connection (a new instance of the DatabaseQuery class)
+            $db = $container->get(DatabaseInterface::class);
+
+            // Convert Joomla user ID to Hikashop user ID
+            $query = $db->getQuery(true)
+                ->select($db->quoteName('user_id'))
+                ->from($db->quoteName('#__hikashop_user'))
+                ->where(
+                    $db->quoteName('user_cms_id') . ' = ' . (int) $user['id']
+                );
+
+            $db->setQuery($query);
+
+            $hikashopUserId = (int) $db->loadResult();
+
+            // Check whether the Hikashop user has a confirmed order
+            if ($hikashopUserId > 0)
+            {
+                $query = $db->getQuery(true)
+                    ->select('COUNT(*)')
+                    ->from($db->quoteName('#__hikashop_order'))
+                    ->where(
+                        $db->quoteName('order_user_id') . ' = ' . (int) $hikashopUserId
+                    )
+                    ->where(
+                        $db->quoteName('order_status') . ' = ' . $db->quote('confirmed')
+                    );
+
+                $db->setQuery($query);
+
+                $confirmedOrders = (int) $db->loadResult();
+
+                // User has at least one confirmed order
+                if ($confirmedOrders > 0)
+                {
+                    $hikashopTagsArray = explode(',', $hikashopTagsInput);
+
+                    foreach ($hikashopTagsArray as $tag)
+                    {
+                        $tag = trim($tag);
+
+                        if ($tag !== '')
+                        {
+                            $tags[] = $tag;
+                        }
+                    }
+                }
+            }
+        }
+        catch (\RuntimeException $e)
+        {
+            Log::add($e->getMessage(), Log::ERROR, 'chimpounga-error');
+
+            if (JDEBUG)
+            {
+                Log::add($e->getMessage(), Log::DEBUG, 'chimpounga-error');
+            }
+        }
+    }
+    
     // Manually include the MailChimp library
     require_once JPATH_PLUGINS . '/user/chimpounga/lib/MailChimp.php';
     
+    // Get the Mailchimp object
     try 
       {
       $mailchimp = new MailChimp($apikey);
       } 
     catch (\Exception $e) 
-      {  //You can never be too careful
-      $application = Factory::getApplication();
-      $application->enqueueMessage($e->getMessage(), 'error');
+      {  
+      Log::add($e->getMessage(), Log::ERROR, 'chimpounga-error');
+
+      if (JDEBUG)
+        {   
+        Log::add($e->getMessage(), Log::DEBUG, 'chimpounga-error');
+        }
+      
       return;
       } 
 

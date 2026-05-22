@@ -1,8 +1,8 @@
 <?php
 /*
  * @package Chimpounga Plugin
- * Version 1.0
- * @license http://www.gnu.org/licenses/gpl-3.0.html GNU/GPLv3 only
+ * @version 1.1
+ * @license http://www.gnu.org/licenses/gpl-3.0.html GNU/GPLv3
  */
 namespace Naftee\Plugin\User\Chimpounga\Field;
 
@@ -14,8 +14,8 @@ use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
 use Joomla\Registry\Registry;
+
 use DrewM\MailChimp\MailChimp;
-use Joomla\CMS\Factory;
 
 /**
  * This is a form element that displays Mailchimp Lists
@@ -44,14 +44,37 @@ class MailchimplistsField extends ListField
         $mailchimp = new MailChimp($params->get('apikey',''));
         } 
       catch (\Exception $e) 
-        {  //User entered an invalid API key
-        $application = Factory::getApplication();
-        $application->enqueueMessage($e->getMessage(), 'error');
-        return;
+        {        
+        $options[] = HTMLHelper::_('select.option', '-1', Text::alt('PLG_USER_CHIMPOUNGA_INVALID_API_KEY', preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)));
+        // Merge any additional options from the XML definition
+        $options = array_merge(parent::getOptions(), $options);
+        
+        return $options;
         }  
               
       //Get all the mailing lists (with a get on the lists method)
       $lists = $mailchimp->get('lists');
+      
+      // API request failed
+      if (!$mailchimp->success())
+          {
+          $options[] = HTMLHelper::_('select.option', '-1', Text::_('PLG_USER_CHIMPOUNGA_INVALID_API_KEY'));
+
+          $options = array_merge(parent::getOptions(), $options);
+
+          return $options;
+          }
+
+      // Valid request but no lists exist
+      if (empty($lists['lists']))
+          {
+          $options[] = HTMLHelper::_('select.option', '-1', Text::_('PLG_USER_CHIMPOUNGA_NO_LISTS'));
+
+          $options = array_merge(parent::getOptions(), $options);
+
+          return $options;
+          }
+
            
       if ($lists && !empty($lists['lists'])) 
         { //Display the dropdown so the user can choose which list
@@ -61,6 +84,7 @@ class MailchimplistsField extends ListField
           }
         } 
       }
+      
     //Create a translated option ensuring safe characters in the key    
     else
       {

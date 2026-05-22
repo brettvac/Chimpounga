@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension method="upgrade" type="plugin" group="user">
 	<name>plg_user_chimpounga</name>
-  <version>1.0</version>
+  <version>1.1</version>
   <description>PLG_USER_CHIMPOUNGA_DESCRIPTION</description>
-	<author>ThemeXpert(Parvez Akther) / Brett Vachon</author>
-	<creationDate>July 2014</creationDate>
+	<author>Brett Vachon</author>
+	<creationDate>
+   July 2014
+   11-03-2025
+  </creationDate>
 	<copyright>
-   Original XChimp plugin Copyright (C) 2010 - 2014 ThemeXpert.
+   Original XChimp plugin Copyright (C) 2010 - 2014 (Parvez Akther) / ThemeXpert.
    Chimpounga Copyright (C) 2025 - 2026 Brett Vachon.
   </copyright>
-	<license>GNU General Public License version 3 or later</license>
+	<license>GNU General Public License version 3</license>
 
   <namespace path="src">Naftee\Plugin\User\Chimpounga</namespace>
 
@@ -42,27 +45,66 @@
 
 				<field name="apikey" type="text" 
           class="form-control"	
-          label="PLG_USER_CHIMPOUNGA_FIELD_APIKEY"  
-          description="PLG_USER_CHIMPOUNGA_FIELD_APIKEY_DESC"
+          label="PLG_USER_CHIMPOUNGA_APIKEY"  
+          description="PLG_USER_CHIMPOUNGA_APIKEY_DESC"
         />
 
         <field name="listid" type="mailchimplists"
-          label="PLG_USER_CHIMPOUNGA_FIELD_LISTID"
-          description="PLG_USER_CHIMPOUNGA_FIELD_LISTID_DESC" 
+          label="PLG_USER_CHIMPOUNGA_LISTID"
+          description="PLG_USER_CHIMPOUNGA_LISTID_DESC" 
         />
         
-        <field name="tags" type="text"
+        <field
+          name="add_tags"
+          type="radio"
+          label="PLG_USER_CHIMPOUNGA_ADD_TAGS"
+          description="PLG_USER_CHIMPOUNGA_ADD_TAGS_DESC"
+          default="1"
+          class="btn-group btn-group-yesno"
+          >
+          <option value="1">JYES</option>
+          <option value="0">JNO</option>
+      </field>
+
+      <field
+          name="tags"
+          type="text"
           class="form-control"
-          label="PLG_USER_CHIMPOUNGA_FIELD_TAGS"
-          description="PLG_USER_CHIMPOUNGA_FIELD_TAGS_DESC"
-        />
+          label="PLG_USER_CHIMPOUNGA_TAGS"
+          description="PLG_USER_CHIMPOUNGA_TAGS_DESC"
+          showon="add_tags:1"
+      />
+      
+      <field
+          name="hikashop_confirmed_order_tags"
+          type="radio"
+          label="PLG_USER_CHIMPOUNGA_HIKASHOP_CONFIRMED_ORDER_TAGS"
+          description="PLG_USER_CHIMPOUNGA_HIKASHOP_CONFIRMED_ORDER_TAGS_DESC"
+          default="0"
+          class="btn-group btn-group-yesno"
+          >
+          <option value="1">JYES</option>
+          <option value="0">JNO</option>
+      </field>
+
+      <field
+          name="hikashop_tags"
+          type="text"
+          class="form-control"
+          label="PLG_USER_CHIMPOUNGA_HIKASHOP_TAGS"
+          description="PLG_USER_CHIMPOUNGA_HIKASHOP_TAGS_DESC"
+          showon="hikashop_confirmed_order_tags:1"
+      />
 
 			</fieldset>
 
 		</fields>
 	</config>
   
+  <changelogurl>https://raw.githubusercontent.com/brettvac/Chimpounga/refs/heads/main/update/changelog.xml</changelogurl>
+  
   <updateservers>
     <server type="extension" name="Chimpounga Updates">https://raw.githubusercontent.com/brettvac/Chimpounga/refs/heads/main/update/updates.xml</server>
   </updateservers>
+  
 </extension>

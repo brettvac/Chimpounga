@@ -1,7 +1,7 @@
 <updates>
     <update>
-        <name>Chimpounga Plugin updates</name>
-        <description>Chimpounga user plugin automatically adds a registered Joomla! user to a Mailchimp list.</description>
+        <name>Chimpounga User Plugin updates</name>
+        <description>Updates for the Chimpounga user plugin.</description>
         <element>chimpounga</element>
         <type>plugin</type>
         <folder>user</folder>
@@ -9,14 +9,14 @@
         <client>site</client>
        
         <downloads>
-            <downloadurl type="full" format="zip">https://github.com/brettvac/Chimpounga/releases/download/1.0/plg_user_chimpounga.zip</downloadurl>
+            <downloadurl type="full" format="zip">https://github.com/brettvac/Chimpounga/releases/download/1.1/plg_user_chimpounga.zip</downloadurl>
         </downloads>
         
-        <infourl title="Chimpounga GitHub Repository">https://github.com/brettvac/chimpounga</infourl>
+        <infourl title="Chimpounga User Plugin GitHub Repository">https://github.com/brettvac/chimpounga</infourl>
+               
+        <changelogurl>https://raw.githubusercontent.com/brettvac/Chimpounga/refs/heads/main/update/changelog.xml</changelogurl>
         
-        <changelogurl>https://github.com/brettvac/Chimpounga/releases/tag/1.0</changelogurl>
-        
-        <targetplatform name="joomla" version="4\..*|5\..*|6\..*"/>
-        <php_minimum>7.2.5</php_minimum>
+        <targetplatform name="joomla" version="5\..*|6\..*"/>
+        <php_minimum>8.1.0</php_minimum>
     </update>
 </updates>

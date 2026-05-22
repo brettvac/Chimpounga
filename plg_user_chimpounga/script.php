@@ -1,7 +1,8 @@
 <?php
 /**
- * @package    Chimpounga
- * @license    GNU General Public License version 2
+ * @package    Chimpounga User Plugin
+ * @version     1.1
+ * @license    GNU General Public License version 3
  */
 
 // No direct access
@@ -14,8 +15,8 @@ use Joomla\CMS\Language\Text;
 
 return new class () implements InstallerScriptInterface {
 
-    private string $minimumJoomla = '4.0.0';
-    private string $minimumPhp    = '7.2.5';
+    private string $minimumJoomla = '5.0.0';
+    private string $minimumPhp    = '8.1.0';
 
     public function install(InstallerAdapter $adapter): bool
     {
@@ -43,20 +44,12 @@ return new class () implements InstallerScriptInterface {
         }
 
         if (version_compare(PHP_VERSION, $this->minimumPhp, '<')) {
-            Factory::getApplication()->enqueueMessage(
-                sprintf(Text::_('JLIB_INSTALLER_MINIMUM_PHP'), $this->minimumPhp),
-                'error'
-            );
-
+            Factory::getApplication()->enqueueMessage(sprintf(Text::_('JLIB_INSTALLER_MINIMUM_PHP'), $this->minimumPhp),'error');
             return false;
         }
 
         if (version_compare(JVERSION, $this->minimumJoomla, '<')) {
-            Factory::getApplication()->enqueueMessage(
-                sprintf(Text::_('JLIB_INSTALLER_MINIMUM_JOOMLA'), $this->minimumJoomla),
-                'error'
-            );
-
+            Factory::getApplication()->enqueueMessage(sprintf(Text::_('JLIB_INSTALLER_MINIMUM_JOOMLA'), $this->minimumJoomla),'error');
             return false;
         }
 

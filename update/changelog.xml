@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<changelogs>
+    <changelog>
+        <element>plg_user_chimpounga</element>
+        <type>plugin</type>
+        <version>1.1</version>
+        <addition>
+            <item>Added changelog URL to the manifest file.</item>
+            <item>Added the <pre>changelog.xml</pre> file and corrected the URL in the update server file.</item>
+            <item>Added a configuration option to add tags if the user has a confirmed HikaShop order.</item>
+            <item>Implemented plugin functionality to add tags to contacts after querying the HikaShop database for a successful order with confirmed status.</item>
+        </addition>
+        <change>
+            <item>Updated the extension version information in the manifest file.</item>
+            <item>Updated version information and removed Joomla 4 support from the installer script.</item>
+            <item><![CDATA[Moved from using the generic event which retrieves an array of arguments to <pre>AbstractUserEvent</pre> with properly typed code and event arguments using the modern Joomla 5 approach.]]></item>
+            <item><![CDATA[Changed the variable type from the generic <pre>Event</pre> class to the concrete <pre>AfterSaveEvent</pre>.]]></item>
+            <item>Removed FIELD from language tags for concision.</item>
+            <item>Modified the About API plugin description to use HTML formatting and corrected the English language string.</item>
+        </change>
+        <fix>
+           <item>Added new language strings for invalid or missing API keys and implemented the proper return value for the Form field class.</item>
+           <item>Improved Mailchimp API key validation by handling malformed keys, API request failures, and empty list responses directly within the plugin field logic instead of using enqueuemessage.</item>
+        </fix>
+    </changelog>
+    <changelog>
+        <element>plg_user_chimpounga</element>
+        <type>plugin</type>
+        <version>1.0</version>
+        <addition>
+            <item>Initial release of the Chimpounga plugin (formerly Xchimp2).</item>
+        </addition>
+        <change>
+            <item>Renamed the plugin from Xchimp2 to Chimpounga.</item>
+        </change>
+    </changelog>
+</changelogs>
