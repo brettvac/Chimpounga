@@ -6,7 +6,7 @@
         <version>1.1</version>
         <addition>
             <item>Added changelog URL to the manifest file.</item>
-            <item>Added the <pre>changelog.xml</pre> file and corrected the URL in the update server file.</item>
+            <item><![CDATA[Added the <pre>changelog.xml</pre> file and corrected the URL in the update server file.]]></item>
             <item>Added a configuration option to add tags if the user has a confirmed HikaShop order.</item>
             <item>Implemented plugin functionality to add tags to contacts after querying the HikaShop database for a successful order with confirmed status.</item>
         </addition>
