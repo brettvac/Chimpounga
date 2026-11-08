@@ -1,39 +1,126 @@
-# Chimpounga Joomla! User Plugin
-
+# Chimpounga – Joomla! User Plugin
 ![Chimpounga Thumbnail](Chimpounga.png)
 
-Chimpounga is a Joomla! user plugin that makes it simple to connect your Joomla! user registration system to Mailchimp. Once installed and configured, it will automatically subscribe new users to your chosen Mailchimp list. 
+Chimpounga is a Joomla! user plugin that synchronizes Joomla! user accounts with a Mailchimp audience. Once installed and configured, it automatically adds or updates Mailchimp contacts whenever a Joomla! user account is successfully saved.
 
-## Why Use Chimpounga?
-Whether you're running a membership site, or an eCommerce store, Chimpounga helps you automatically sync your users with your Mailchimp mailing lists—no manual exports required!
+The plugin also supports Mailchimp tags, including optional tags assigned to customers who have placed at least one confirmed order through HikaShop.
+
+## Requirements
+
+- Joomla! 5.0.0 or later
+- PHP 8.1.0 or later
+- A Mailchimp account and API key
+- HikaShop (optional, only required for confirmed-order tagging)
 
 ## Features
-- **Effortless Mailchimp Integration** – Seamlessly sync Joomla! users on your site with your Mailchimp lists.
-- **Automatic Subscription** – New Joomla! users are added to Mailchimp as soon as they are saved, with option to add tags.
-- **Update existing contacts** – Update tags on existing contacts and confirm their subscription via email.
-- **Easy Setup** – Just enter your API key, choose from all available Mailchimp lists and assign users accordingly.
 
-## Installation Instructions
-1. Install the plugin via Joomla! Extensions Manager.
-2. Enable the plugin under `Extensions > Plugins > User - Chimpounga`.
-3. Enter your Mailchimp API key in the plugin settings.
-4. Select which Mailchimp list new users should be subscribed to.
-5. Customize options like **double opt-in** and **list selection**.
-6. Save your settings, and you're good to go!
+- **Automatic synchronization** – Adds new Joomla! users to a selected Mailchimp audience and updates existing contacts when their Joomla! account is saved.
+- **Contact information updates** – Synchronizes the user's email address, first name, and last name.
+- **Mailchimp tags** – Optionally assigns configured tags to contacts.
+- **Subscription handling** – Adds new contacts with a subscribed status. Existing subscribed contacts are updated, while unsubscribed contacts are moved to pending status so they must confirm their subscription again.
+- **HikaShop integration** – Optionally assigns specific Mailchimp tags to users who have at least one confirmed HikaShop order.
+- **Dynamic audience selection** – Retrieves available Mailchimp audiences through the API, allowing you to select the desired audience directly in the plugin settings.
+- **Debug logging** – Records Mailchimp API responses and request errors when Joomla! debugging is enabled.
 
-## Contributions
-This plugin is partially a derivative work of the XChimp plugin developed by **ThemeXpert** as [XChimp](https://www.themexpert.com/joomla-extensions/xchimp). Joomla! 3 had several great free plugins, but many of them stopped working after the API upgrades starting with Joomla! 4. 
+## Installation
 
-XChimp is one of those free Mailchimp integrations which I updated to work with the new Joomla! plugin API. Chimpounga is my attempt to keep Mailchimp integration alive for modern Joomla! sites. 
+## Installation
 
-The plugin uses the [![Drewm Mailchimp API](https://travis-ci.org/drewm/mailchimp-api.svg?branch=master)](https://travis-ci.org/drewm/mailchimp-api)
+Chimpounga can be installed directly from its latest GitHub release using Joomla!'s **Install from URL** feature.
+
+1. In Joomla! Administrator, navigate to **System → Install → Extensions**.
+2. Select the **Install from URL** tab.
+3. Enter the following URL:
+
+   `https://github.com/brettvac/Chimpounga/releases/latest/download/plg_user_chimpounga.zip`
+
+4. Click **Check & Install** and wait for Joomla! to complete the installation.
+5. Navigate to **System → Manage → Plugins**.
+6. Find and enable **User - Chimpounga**.
+7. Open the plugin settings and configure your Mailchimp API key and audience.
+
+## Configuration
+
+### Mailchimp API settings
+
+**API Key**
+
+Enter your Mailchimp API key. The plugin uses this key to communicate with the Mailchimp API.
+
+**Mailchimp Audience**
+
+Once a valid API key is entered, the audience selection field retrieves the available audiences from your Mailchimp account. Select the audience to which Joomla! users should be synchronized.
+
+### Mailchimp tags
+
+**Add Tags**
+
+Choose whether to assign the configured tags to synchronized contacts.
+
+**Tags**
+
+Enter a comma-separated list of Mailchimp tags to assign to contacts. This field is available when Add Tags is enabled.
+
+### HikaShop integration
+
+**HikaShop Confirmed Order Tags**
+
+Enable this option to assign additional Mailchimp tags to users who have at least one confirmed HikaShop order.
+
+**HikaShop Tags**
+
+Enter a comma-separated list of tags to assign to qualifying customers. This field is available when HikaShop Confirmed Order Tags is enabled.
+
+Chimpounga checks the Joomla! user associated with the HikaShop account and verifies whether at least one order has the `confirmed` status before applying these tags.
+
+## How synchronization works
+
+Chimpounga listens for Joomla!'s `onUserAfterSave` event.
+
+After a successful user save, the plugin:
+
+1. Retrieves the Joomla! user's email address and name.
+2. Checks the selected Mailchimp audience for an existing contact.
+3. Adds the contact if it does not already exist.
+4. Updates the contact's merge fields and configured tags if the contact is already subscribed.
+5. Sets an unsubscribed contact to pending status, requiring the user to confirm their subscription again.
+6. Checks for confirmed HikaShop orders, if that integration is enabled, and applies the corresponding tags.
+
+Failed Joomla! user saves are ignored. Contacts with other Mailchimp subscription statuses are not automatically changed.
+
+**Important:** New contacts are added with a subscribed status. Make sure your registration and consent process complies with applicable email marketing regulations and Mailchimp's requirements.
+
+## Debugging and logging
+
+Chimpounga records Mailchimp API request results and errors in Joomla!'s logging system.
+
+To enable debug logging:
+
+1. Enable **Debug System** in Joomla!'s Global Configuration.
+2. Trigger a user registration or account update.
+3. Check Joomla!'s logs for entries in the `chimpounga-debug` category.
+
+The debug log includes HTTP response codes, including 404 responses when a contact is not found. These 404 responses are expected during the lookup of contacts that need to be created.
+
+API keys, email addresses, and request payloads are not included in the debug messages.
+
+## Version history
+
+### Version 1.2
+
+- Replaced the DrewM Mailchimp library with a dedicated helper using Joomla! CMS HttpFactory for API communication.
+- Updated the main plugin and custom Mailchimp audience field to use the new helper.
+- Improved Mailchimp API response handling, including contact lookup responses with HTTP 404 status codes.
+- Added debug logging for Mailchimp API responses and request errors.
+- Updated PHP file docblocks to follow Joomla! coding conventions.
 
 ## FAQ
-**Q: Can I use Chimpounga to send emails to my grandma?**  
-**A:** While the plugin doesn't directly send e-mails, if your grandma creates an account on your Joomla! site, she will be added to your list. Be sure that she isn’t expecting handwritten letters instead.  
 
-**Q:  Can I use Chimpounga with Joomla! 3?**
-**A:** No, Chimpounga is specifically designed for Joomla! 4 and later. If you're using Joomla! 3, get the Xchimp plugin.
+**Q: Does Chimpounga send emails?**
+
+A: No. Chimpounga synchronizes Joomla! user accounts with Mailchimp. Mailchimp handles subscription confirmations and email campaigns.
+
+**Q: Does
 
 **Q: This plugin is awesome! Can I send a donation?**  
 **A:** Sure! Send your cryptonation to the following wallets:
