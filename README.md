@@ -116,12 +116,6 @@ API keys, email addresses, and request payloads are not included in the debug me
 
 ## FAQ
 
-**Q: Does Chimpounga send emails?**
-
-A: No. Chimpounga synchronizes Joomla! user accounts with Mailchimp. Mailchimp handles subscription confirmations and email campaigns.
-
-**Q: Does
-
 **Q: This plugin is awesome! Can I send a donation?**  
 **A:** Sure! Send your cryptonation to the following wallets:
 
