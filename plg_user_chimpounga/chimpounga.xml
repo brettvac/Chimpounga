@@ -1,110 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension method="upgrade" type="plugin" group="user">
-	<name>plg_user_chimpounga</name>
-  <version>1.1</version>
-  <description>PLG_USER_CHIMPOUNGA_DESCRIPTION</description>
-	<author>Brett Vachon</author>
-	<creationDate>
-   July 2014
-   11-03-2025
-  </creationDate>
-	<copyright>
-   Original XChimp plugin Copyright (C) 2010 - 2014 (Parvez Akther) / ThemeXpert.
-   Chimpounga Copyright (C) 2025 - 2026 Brett Vachon.
-  </copyright>
-	<license>GNU General Public License version 3</license>
-
-  <namespace path="src">Naftee\Plugin\User\Chimpounga</namespace>
-
-	<files>
-		<folder plugin="chimpounga">services</folder>
-    <folder>src</folder>
-		<folder>lib</folder>
-	</files>
-  
-  <languages folder="language">
-		<language tag="en-GB">en-GB/plg_user_chimpounga.ini</language>
-		<language tag="en-GB">en-GB/plg_user_chimpounga.sys.ini</language>
-    <language tag="fr-FR">fr-FR/plg_user_chimpounga.ini</language>
-		<language tag="fr-FR">fr-FR/plg_user_chimpounga.sys.ini</language>
-	</languages>
-  
-  <scriptfile>script.php</scriptfile>
-
-  <config>
-		<fields name="params" addfieldprefix="Naftee\Plugin\User\Chimpounga\Field">
-
-			<fieldset name="basic">
-
-        <field name="note" type="note"
-          label="PLG_USER_CHIMPOUNGA_NOTE_LABEL"
-          description="PLG_USER_CHIMPOUNGA_NOTE_DESC"
-          inlineHelp="true"
-          class="alert alert-info"
-        />
-
-				<field name="apikey" type="text" 
-          class="form-control"	
-          label="PLG_USER_CHIMPOUNGA_APIKEY"  
-          description="PLG_USER_CHIMPOUNGA_APIKEY_DESC"
-        />
-
-        <field name="listid" type="mailchimplists"
-          label="PLG_USER_CHIMPOUNGA_LISTID"
-          description="PLG_USER_CHIMPOUNGA_LISTID_DESC" 
-        />
-        
-        <field
-          name="add_tags"
-          type="radio"
-          label="PLG_USER_CHIMPOUNGA_ADD_TAGS"
-          description="PLG_USER_CHIMPOUNGA_ADD_TAGS_DESC"
-          default="1"
-          class="btn-group btn-group-yesno"
-          >
-          <option value="1">JYES</option>
-          <option value="0">JNO</option>
-      </field>
-
-      <field
-          name="tags"
-          type="text"
-          class="form-control"
-          label="PLG_USER_CHIMPOUNGA_TAGS"
-          description="PLG_USER_CHIMPOUNGA_TAGS_DESC"
-          showon="add_tags:1"
-      />
-      
-      <field
-          name="hikashop_confirmed_order_tags"
-          type="radio"
-          label="PLG_USER_CHIMPOUNGA_HIKASHOP_CONFIRMED_ORDER_TAGS"
-          description="PLG_USER_CHIMPOUNGA_HIKASHOP_CONFIRMED_ORDER_TAGS_DESC"
-          default="0"
-          class="btn-group btn-group-yesno"
-          >
-          <option value="1">JYES</option>
-          <option value="0">JNO</option>
-      </field>
-
-      <field
-          name="hikashop_tags"
-          type="text"
-          class="form-control"
-          label="PLG_USER_CHIMPOUNGA_HIKASHOP_TAGS"
-          description="PLG_USER_CHIMPOUNGA_HIKASHOP_TAGS_DESC"
-          showon="hikashop_confirmed_order_tags:1"
-      />
-
-			</fieldset>
-
-		</fields>
-	</config>
-  
-  <changelogurl>https://raw.githubusercontent.com/brettvac/Chimpounga/refs/heads/main/update/changelog.xml</changelogurl>
-  
-  <updateservers>
-    <server type="extension" name="Chimpounga Updates">https://raw.githubusercontent.com/brettvac/Chimpounga/refs/heads/main/update/updates.xml</server>
-  </updateservers>
-  
+    <name>plg_user_chimpounga</name>
+    <version>1.2</version>
+    <description>PLG_USER_CHIMPOUNGA_DESCRIPTION</description>
+    <author>Brett Vachon</author>
+    <creationDate>11-03-2025</creationDate>
+    <copyright>Chimpounga Copyright (C) 2025 - 2026 Brett Vachon.</copyright>
+    <license>GNU General Public License version 2</license>
+    <namespace path="src">Naftee\Plugin\User\Chimpounga</namespace>
+    <files>
+        <folder plugin="chimpounga">services</folder>
+        <folder>src</folder>
+    </files>
+    <languages folder="language">
+        <language tag="en-GB">en-GB/plg_user_chimpounga.ini</language>
+        <language tag="en-GB">en-GB/plg_user_chimpounga.sys.ini</language>
+        <language tag="fr-FR">fr-FR/plg_user_chimpounga.ini</language>
+        <language tag="fr-FR">fr-FR/plg_user_chimpounga.sys.ini</language>
+    </languages>
+    <scriptfile>script.php</scriptfile>
+    <config>
+        <fields name="params" addfieldprefix="Naftee\Plugin\User\Chimpounga\Field">
+            <fieldset name="basic">
+            <field name="note" type="note" label="PLG_USER_CHIMPOUNGA_NOTE_LABEL" description="PLG_USER_CHIMPOUNGA_NOTE_DESC" inlineHelp="true" class="alert alert-info" />
+            <field name="apikey" type="text" class="form-control" label="PLG_USER_CHIMPOUNGA_APIKEY" description="PLG_USER_CHIMPOUNGA_APIKEY_DESC" />
+            <field name="listid" type="mailchimplists" label="PLG_USER_CHIMPOUNGA_LISTID" description="PLG_USER_CHIMPOUNGA_LISTID_DESC" />
+            <field name="add_tags" type="radio" label="PLG_USER_CHIMPOUNGA_ADD_TAGS" description="PLG_USER_CHIMPOUNGA_ADD_TAGS_DESC" default="1" class="btn-group btn-group-yesno">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="tags" type="text" class="form-control" label="PLG_USER_CHIMPOUNGA_TAGS" description="PLG_USER_CHIMPOUNGA_TAGS_DESC" showon="add_tags:1" />
+            <field name="hikashop_confirmed_order_tags" type="radio" label="PLG_USER_CHIMPOUNGA_HIKASHOP_CONFIRMED_ORDER_TAGS" description="PLG_USER_CHIMPOUNGA_HIKASHOP_CONFIRMED_ORDER_TAGS_DESC" default="0" class="btn-group btn-group-yesno">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="hikashop_tags" type="text" class="form-control" label="PLG_USER_CHIMPOUNGA_HIKASHOP_TAGS" description="PLG_USER_CHIMPOUNGA_HIKASHOP_TAGS_DESC" showon="hikashop_confirmed_order_tags:1" />
+        </fieldset>
+        </fields>
+    </config>
+    <changelogurl>https://raw.githubusercontent.com/brettvac/Chimpounga/refs/heads/main/update/changelog.xml</changelogurl>
+    <updateservers>
+        <server type="extension" name="Chimpounga Updates">https://raw.githubusercontent.com/brettvac/Chimpounga/refs/heads/main/update/updates.xml</server>
+    </updateservers>
 </extension>

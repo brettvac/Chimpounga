@@ -1,8 +1,10 @@
 <?php
 /**
- * @package    Chimpounga User Plugin
- * @version     1.1
- * @license    GNU General Public License version 3
+ * @package     Joomla.Site
+ * @subpackage  plg_user_chimpounga
+ *
+ * @version     1.2
+ * @license     GNU General Public License version 2
  */
 
 // No direct access

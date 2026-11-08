@@ -3,6 +3,20 @@
     <changelog>
         <element>plg_user_chimpounga</element>
         <type>plugin</type>
+        <version>1.2</version>
+        <change>
+            <item>Replaced the DrewM Mailchimp library with a dedicated helper using Joomla CMS HttpFactory for API communication.</item>
+            <item>Updated the main plugin and custom Mailchimp list field to use the new helper.</item>
+            <item>Updated PHP file docblocks to follow Joomla coding conventions.</item>
+        </change>
+        <fix>
+            <item>Improved Mailchimp API response handling, including subscriber lookup responses with HTTP 404 status codes.</item>
+            <item>Added debug logging for Mailchimp API responses and request errors to simplify troubleshooting.</item>
+        </fix>
+    </changelog>
+    <changelog>
+        <element>plg_user_chimpounga</element>
+        <type>plugin</type>
         <version>1.1</version>
         <addition>
             <item>Added changelog URL to the manifest file.</item>

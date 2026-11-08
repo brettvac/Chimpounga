@@ -1,7 +1,10 @@
 <?php
 /**
- * @package Chimpounga
- * @license http://www.gnu.org/licenses/gpl-3.0.html GNU/GPLv3 only
+ * @package     Joomla.Site
+ * @subpackage  plg_user_chimpounga
+ *
+ * @version     1.2
+ * @license     GNU General Public License version 2
  */
 
 \defined('_JEXEC') or die; //No direct access

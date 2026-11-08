@@ -1,99 +1,145 @@
 <?php
-/*
- * @package Chimpounga Plugin
- * @version 1.1
- * @license http://www.gnu.org/licenses/gpl-3.0.html GNU/GPLv3
+/**
+ * @package     Joomla.Site
+ * @subpackage  plg_user_chimpounga
+ *
+ * @version     1.2
+ * @license     GNU General Public License version 2
  */
+
 namespace Naftee\Plugin\User\Chimpounga\Field;
 
-// No direct access
-defined('_JEXEC') or die;
+\defined('_JEXEC') or die;
 
 use Joomla\CMS\Form\Field\ListField;
-use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\CMS\HTML\HTMLHelper;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Log\Log;
+use Joomla\CMS\Plugin\PluginHelper;
 use Joomla\Registry\Registry;
-
-use DrewM\MailChimp\MailChimp;
+use Naftee\Plugin\User\Chimpounga\Helper\MailchimpHelper;
 
 /**
- * This is a form element that displays Mailchimp Lists
+ * Form field displaying available Mailchimp mailing lists.
+ *
+ * @since  1.2
  */
 class MailchimplistsField extends ListField
-  {
-
-  protected function getOptions()
+{
+    /**
+     * Get the available Mailchimp mailing lists.
+     *
+     * @return  array
+     */
+    protected function getOptions(): array
     {
-    $plugin = PluginHelper::getPlugin('user', 'chimpounga');
-       
-    $params = new Registry($plugin->params);
+        $options = [];
 
-    $options = [];  //The lists the user will be subscribed to
+        // Retrieve the Chimpounga plugin configuration.
+        $plugin = PluginHelper::getPlugin('user', 'chimpounga');
 
-    if (!empty($params->get('apikey','')))
-      {
-      // Include Mailchimp API wrapper
-      require_once JPATH_PLUGINS . '/user/chimpounga/lib/MailChimp.php';
-            
-      //Create a Mailchimp instance
-      $mailchimp = null;
-            
-      try 
-        {
-        $mailchimp = new MailChimp($params->get('apikey',''));
-        } 
-      catch (\Exception $e) 
-        {        
-        $options[] = HTMLHelper::_('select.option', '-1', Text::alt('PLG_USER_CHIMPOUNGA_INVALID_API_KEY', preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)));
-        // Merge any additional options from the XML definition
-        $options = array_merge(parent::getOptions(), $options);
-        
-        return $options;
-        }  
-              
-      //Get all the mailing lists (with a get on the lists method)
-      $lists = $mailchimp->get('lists');
-      
-      // API request failed
-      if (!$mailchimp->success())
-          {
-          $options[] = HTMLHelper::_('select.option', '-1', Text::_('PLG_USER_CHIMPOUNGA_INVALID_API_KEY'));
+        if (!$plugin || empty($plugin->params)) {
+            $options[] = HTMLHelper::_(
+                'select.option',
+                '-1',
+                Text::alt(
+                    'PLG_USER_CHIMPOUNGA_PROVIDE_API_KEY',
+                    preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)
+                )
+            );
 
-          $options = array_merge(parent::getOptions(), $options);
+            return array_merge(parent::getOptions(), $options);
+        }
 
-          return $options;
-          }
+        $params = new Registry($plugin->params);
 
-      // Valid request but no lists exist
-      if (empty($lists['lists']))
-          {
-          $options[] = HTMLHelper::_('select.option', '-1', Text::_('PLG_USER_CHIMPOUNGA_NO_LISTS'));
+        $apiKey = $params->get('apikey', '');
 
-          $options = array_merge(parent::getOptions(), $options);
+        // API key has not been provided.
+        if (empty($apiKey)) {
+            $options[] = HTMLHelper::_(
+                'select.option',
+                '-1',
+                Text::alt(
+                    'PLG_USER_CHIMPOUNGA_PROVIDE_API_KEY',
+                    preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)
+                )
+            );
 
-          return $options;
-          }
+            return array_merge(parent::getOptions(), $options);
+        }
 
-           
-      if ($lists && !empty($lists['lists'])) 
-        { //Display the dropdown so the user can choose which list
-        foreach ($lists['lists'] as $list)
-          {
-          $options[] = HTMLHelper::_('select.option', $list['id'], $list['name']);
-          }
-        } 
-      }
-      
-    //Create a translated option ensuring safe characters in the key    
-    else
-      {
-      $options[] = HTMLHelper::_('select.option', '-1', Text::alt('PLG_USER_CHIMPOUNGA_PROVIDE_API_KEY', preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)));
-      }
+        // Initialize the Mailchimp helper.
+        try {
+            $mailchimp = new MailchimpHelper($apiKey);
+        } catch (\Throwable $e) {
+            Log::add(
+                $e->getMessage(),
+                Log::ERROR,
+                'chimpounga-error'
+            );
 
-    // Merge any additional options from the XML definition
-    $options = array_merge(parent::getOptions(), $options);
+            if (defined('JDEBUG') && JDEBUG) {
+                Log::add(
+                    $e->getMessage(),
+                    Log::DEBUG,
+                    'chimpounga-debug'
+                );
+            }
 
-    return $options;
+            $options[] = HTMLHelper::_(
+                'select.option',
+                '-1',
+                Text::alt(
+                    'PLG_USER_CHIMPOUNGA_INVALID_API_KEY',
+                    preg_replace('/[^a-zA-Z0-9_\-]/', '_', $this->fieldname)
+                )
+            );
+
+            return array_merge(parent::getOptions(), $options);
+        }
+
+        // Retrieve the available mailing lists.
+        $lists = $mailchimp->get('lists');
+
+        // Mailchimp API request failed.
+        if (!$mailchimp->success()) {
+            Log::add(
+                (string) $mailchimp->getLastError(),
+                Log::ERROR,
+                'chimpounga-error'
+            );
+
+            $options[] = HTMLHelper::_(
+                'select.option',
+                '-1',
+                Text::_('PLG_USER_CHIMPOUNGA_INVALID_API_KEY')
+            );
+
+            return array_merge(parent::getOptions(), $options);
+        }
+
+        // API request succeeded, but no mailing lists exist.
+        if (empty($lists['lists'])) {
+            $options[] = HTMLHelper::_(
+                'select.option',
+                '-1',
+                Text::_('PLG_USER_CHIMPOUNGA_NO_LISTS')
+            );
+
+            return array_merge(parent::getOptions(), $options);
+        }
+
+        // Populate the dropdown with available mailing lists.
+        foreach ($lists['lists'] as $list) {
+            $options[] = HTMLHelper::_(
+                'select.option',
+                $list['id'],
+                $list['name']
+            );
+        }
+
+        // Merge any additional options from the XML definition.
+        return array_merge(parent::getOptions(), $options);
     }
-  }
+}
