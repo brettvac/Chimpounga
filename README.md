@@ -5,6 +5,8 @@ Chimpounga is a Joomla! user plugin that synchronizes Joomla! user accounts with
 
 The plugin also supports Mailchimp tags, including optional tags assigned to customers who have placed at least one confirmed order through HikaShop.
 
+**Important:** New contacts are added with a subscribed status. Make sure your registration and consent process complies with applicable email marketing regulations and Mailchimp's requirements.
+
 ## Requirements
 
 - Joomla! 5.0.0 or later
@@ -24,8 +26,6 @@ The plugin also supports Mailchimp tags, including optional tags assigned to cus
 
 ## Installation
 
-## Installation
-
 Chimpounga can be installed directly from its latest GitHub release using Joomla!'s **Install from URL** feature.
 
 1. In Joomla! Administrator, navigate to **System → Install → Extensions**.
@@ -40,8 +40,6 @@ Chimpounga can be installed directly from its latest GitHub release using Joomla
 7. Open the plugin settings and configure your Mailchimp API key and audience.
 
 ## Configuration
-
-### Mailchimp API settings
 
 **API Key**
 
@@ -72,47 +70,6 @@ Enable this option to assign additional Mailchimp tags to users who have at leas
 Enter a comma-separated list of tags to assign to qualifying customers. This field is available when HikaShop Confirmed Order Tags is enabled.
 
 Chimpounga checks the Joomla! user associated with the HikaShop account and verifies whether at least one order has the `confirmed` status before applying these tags.
-
-## How synchronization works
-
-Chimpounga listens for Joomla!'s `onUserAfterSave` event.
-
-After a successful user save, the plugin:
-
-1. Retrieves the Joomla! user's email address and name.
-2. Checks the selected Mailchimp audience for an existing contact.
-3. Adds the contact if it does not already exist.
-4. Updates the contact's merge fields and configured tags if the contact is already subscribed.
-5. Sets an unsubscribed contact to pending status, requiring the user to confirm their subscription again.
-6. Checks for confirmed HikaShop orders, if that integration is enabled, and applies the corresponding tags.
-
-Failed Joomla! user saves are ignored. Contacts with other Mailchimp subscription statuses are not automatically changed.
-
-**Important:** New contacts are added with a subscribed status. Make sure your registration and consent process complies with applicable email marketing regulations and Mailchimp's requirements.
-
-## Debugging and logging
-
-Chimpounga records Mailchimp API request results and errors in Joomla!'s logging system.
-
-To enable debug logging:
-
-1. Enable **Debug System** in Joomla!'s Global Configuration.
-2. Trigger a user registration or account update.
-3. Check Joomla!'s logs for entries in the `chimpounga-debug` category.
-
-The debug log includes HTTP response codes, including 404 responses when a contact is not found. These 404 responses are expected during the lookup of contacts that need to be created.
-
-API keys, email addresses, and request payloads are not included in the debug messages.
-
-## Version history
-
-### Version 1.2
-
-- Replaced the DrewM Mailchimp library with a dedicated helper using Joomla! CMS HttpFactory for API communication.
-- Updated the main plugin and custom Mailchimp audience field to use the new helper.
-- Improved Mailchimp API response handling, including contact lookup responses with HTTP 404 status codes.
-- Added debug logging for Mailchimp API responses and request errors.
-- Updated PHP file docblocks to follow Joomla! coding conventions.
 
 ## FAQ
 
